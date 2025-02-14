@@ -13,6 +13,11 @@ public class Author {
         this.dob = dob;
     }
 
+    public Author(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public String getName() {
         return name;
     }
@@ -50,5 +55,11 @@ public class Author {
 
     public List<Book> getBooks() {
         return books;
+    }
+
+    @Override
+    public String toString() {
+        return "{name='" + name + "'}";
+        //return "Autor{name='" + name + "', email='" + email + "'}";
     }
 }
