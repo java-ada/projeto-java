@@ -7,6 +7,12 @@ public class Author {
     private LocalDate dob;  //data de nascimento
     private List<Book> books;
 
+    public Author(String name, String email, LocalDate dob) {
+        this.name = name;
+        this.email = email;
+        this.dob = dob;
+    }
+
     public String getName() {
         return name;
     }
