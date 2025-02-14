@@ -1,11 +1,9 @@
-public class PhysicalBook implements Lendable {
-    private double[] dimensions;
+public final class PhysicalBook extends Book{
+    private boolean Available;
 
-    public double[] getDimensions() {
-      return dimensions;
+    public PhysicalBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres, boolean available) {
+        super(ISBN13, title, description, pages, publisher, author, genres);
+        Available = available;
     }
 
-    public void setDimensions(double[] dimensions) {
-      this.dimensions = dimensions;
-    }
 }
