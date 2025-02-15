@@ -9,11 +9,15 @@ public final class PhysicalBook extends Book implements Lendable, Logger {
     private boolean available;
     private double[] dimensions;
 
+<<<<<<< HEAD
     public PhysicalBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres, boolean available) {
         super(ISBN13, title, description, pages, publisher, author, genres);
         this.available = available;
     }
   public PhysicalBook(
+=======
+    public PhysicalBook(
+>>>>>>> ec78628 (Start Library class implementation and Create Validator class)
         String ISBN13,
         String title,
         String description,
