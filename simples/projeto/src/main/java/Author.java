@@ -59,7 +59,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return "{name='" + name + "'}";
-        //return "Autor{name='" + name + "', email='" + email + "'}";
+        return "Nome: " + getName();
     }
 }
