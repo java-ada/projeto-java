@@ -1,5 +1,4 @@
 import java.util.Arrays;
-
 import java.util.stream.Collectors;
 
  
@@ -99,6 +98,32 @@ public abstract sealed class Book permits PhysicalBook, eBook {
 
         System.out.println(json.formatted(this.ISBN13, this.title, this.description, this.pages, this.publisher, bookAuthor, categorias));
 
+    }
+
+    private boolean validateISBN13(String isbn13) {
+        isbn13 = isbn13.replaceAll("[\\-]", "");
+        isbn13 = isbn13.trim();
+        
+        if (!isbn13.matches("^[0-9]*$")) {
+            return false;
+        }
+        
+        if (isbn13.length() != 13) {
+            return false;
+        }
+
+        int sum = 0;
+        char[] tmp = isbn13.toCharArray();
+
+        for (int i = 0; i < 12; i++) {
+            if (i % 2 == 0) {
+                sum += Character.getNumericValue(tmp[i]);
+            } else {
+                sum += Character.getNumericValue(tmp[i]) * 3;
+            }
+        }
+
+        return (10 - (sum % 10)) == Character.getNumericValue(tmp[12]);
     }
 
 }
