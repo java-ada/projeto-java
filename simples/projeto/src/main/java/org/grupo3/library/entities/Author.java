@@ -1,3 +1,5 @@
+package org.grupo3.library.entities;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,9 +15,15 @@ public class Author {
         this.dob = dob;
     }
 
+
+
     public Author(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public Author(String name) {
+        this.name = name;
     }
 
     public String getName() {
