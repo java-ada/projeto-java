@@ -39,18 +39,11 @@ public class Main {
                     System.out.printf("Livro Adicionado Completamente!%nDetalhes Finais do Livro:%n%s", addedBook);
                     break;
                 case "2":
-<<<<<<< HEAD
                     System.out.println("Por favor, insira o ISBN do livro que deseja pegar emprestado:");
                     String ISBN = scanner.nextLine();
                     if (library.lendBook(ISBN)) System.out.printf("Okay, aqui está o livro %s%n", library.getTitleFromISBN(ISBN));
                     else System.out.println(Arrays.toString(library.getBookFromISBN(ISBN)));
                     break;
-=======
-//                    System.out.println("Insira o ISBN do livro que deseja pegar emprestado:");
-//                    String lendISBN = scanner.nextLine();
-//                    library.lendBook(bookIsbn);
-//                    break;
->>>>>>> 4bf88936c4eac80d714ef0da4f4c72de67ac479e
                 case "3":
 //                    System.out.println("Insira o ISBN do livro que deseja devolver:");
 //                    String borrowISBN = scanner.nextLine();
@@ -62,12 +55,6 @@ public class Main {
                     String isbn = scanner.nextLine();
                     library.deleteBookFromLibrary(isbn);
                     break;
-<<<<<<< HEAD
-                case "4":
-                    System.out.println(library.getBooklist());
-                    break;
-=======
->>>>>>> 4bf88936c4eac80d714ef0da4f4c72de67ac479e
                 case "5":
                     System.out.println(library.getBooklist());
                     break;
