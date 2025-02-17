@@ -1,5 +1,6 @@
 import java.io.*;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Main {
                 """;
 
         Genre[] genre1 = {new Genre("Fantasia", "lol"), new Genre("Drama", "omg")};
-        Author author1 = new Author("J.K. Rowling", "jkrowling@example.com");
+        Author author1 = new Author("J.K. Rowling", "jkrowling@example.com", LocalDate.of(1965, 7, 31));
 
         PhysicalBook book1 = new PhysicalBook(
                 "978-0747532699",

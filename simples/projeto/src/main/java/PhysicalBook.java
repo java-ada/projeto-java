@@ -6,18 +6,15 @@ import java.time.format.DateTimeFormatter;
 
 public final class PhysicalBook extends Book implements Lendable, Logger{
     private boolean available;
-    private double[] dimensions;
 
-  public PhysicalBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres, boolean available, double[] dimensions) {
+
+  public PhysicalBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres, boolean available) {
         super(ISBN13, title, description, pages, publisher, author, genres);
         this.available = available;
-        this.dimensions = dimensions;
     }
 
     
-  public double[] getDimensions() {
-    return dimensions;
-  }
+
 
   public void lendBook() {
     if (available) {
