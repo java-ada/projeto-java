@@ -17,7 +17,7 @@ public class Main {
                 """;
 
         Genre[] genre1 = {new Genre("Fantasia", "lol"), new Genre("Drama", "omg")};
-        Author author1 = new Author("J.K. Rowling", "jkrowling@example.com", LocalDate.of(1965, 7, 31));
+        Author author1 = new Author("J.K. Rowling", "jkrowling@example.com");
 
         PhysicalBook book1 = new PhysicalBook(
                 "978-0747532699",

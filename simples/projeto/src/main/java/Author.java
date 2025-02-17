@@ -4,13 +4,11 @@ import java.util.List;
 public class Author {
     private String name;
     private String email;
-    private LocalDate dob;  //data de nascimento
     private List<Book> books;
 
-    public Author(String name, String email, LocalDate dob) {
+    public Author(String name, String email) {
         this.name = name;
         this.email = email;
-        this.dob = dob;
     }
 
     public String getName() {
@@ -27,15 +25,6 @@ public class Author {
 
     public void setEmail(String email) { this.email = email; }
 
-    public LocalDate getDob() {return dob; }
-
-    public void setDob(LocalDate dob) {
-        if (dob.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Data inválida: Data inserida está no futuro");
-        } else {
-            this.dob = dob;
-        }
-    }
 
     public void addBook(Book book) {
         books.add(book);
