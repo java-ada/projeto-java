@@ -1,0 +1,6 @@
+quarkus/
+logs/
+.idea/
+.idea/projeto-java.iml
+out/
+books.csv
