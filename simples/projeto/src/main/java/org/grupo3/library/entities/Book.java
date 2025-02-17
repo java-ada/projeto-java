@@ -1,10 +1,8 @@
 package org.grupo3.library.entities;
 
 import org.grupo3.library.interfaces.Classifiable;
-import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -93,5 +91,31 @@ public sealed class Book implements Classifiable permits PhysicalBook, eBook {
     @Override
     public String toString() {
         return String.format("ISBN13: %s%nTítulo: %s%nDescrição: %s%nAutor(a): %s%nEditora: %s%nGêneros: %s%nNúmero de Páginas: %d%n", getISBN13(), getTitle(), getDescription(), getAuthor(), getPublisher(), getGenres().toString(), getPages());
+    }
+
+    private boolean validateISBN13(String isbn13) {
+        isbn13 = isbn13.replaceAll("\\-", "");
+        isbn13 = isbn13.trim();
+
+        if (!isbn13.matches("^[0-9]*$")) {
+            return false;
+        }
+
+        if (isbn13.length() != 13) {
+            return false;
+        }
+
+        int sum = 0;
+        char[] tmp = isbn13.toCharArray();
+
+        for (int i = 0; i < 12; i++) {
+            if (i % 2 == 0) {
+                sum += Character.getNumericValue(tmp[i]);
+            } else {
+                sum += Character.getNumericValue(tmp[i]) * 3;
+            }
+        }
+
+        return (10 - (sum % 10)) == Character.getNumericValue(tmp[12]);
     }
 }
