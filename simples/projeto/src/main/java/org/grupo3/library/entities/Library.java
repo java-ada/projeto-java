@@ -59,8 +59,8 @@ public class Library implements Logger {
     public void showMenu() {
         String menu =
                 """
-                        1 - Adicionar um livro           2 - Pegar um livro emprestado
-                        3 - Deletar um livro             4 - Listar todos os livros       5 - Sair
+                        1 - Adicionar um livro           2 - Pegar um livro emprestado    3 - Devolver um livro
+                        4 - Deletar um livro             5 - Listar todos os livros       5 - Sair
                 """;
         System.out.println(menu);
     }
@@ -259,11 +259,22 @@ public class Library implements Logger {
         }
     }
 
-    public List<String> getBooklist() {
+    public void lendBook(String ISBN) {}
+
+    public void returnBook(String ISBN) {}
+
+    public ArrayList<String> getBooklist() {
+        var books = new ArrayList<String>();
         try {
-            return Files.readAllLines(FILE_PATH);
+            List<String> lines = Files.readAllLines(FILE_PATH);
+            for(String line : lines) {
+                String[] oneBook = line.split(",");
+                books.add(oneBook[1] + " (ISBN: " + oneBook[0] + ")");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        return books;
     }
 }
