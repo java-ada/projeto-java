@@ -24,7 +24,6 @@ public final class PhysicalBook extends Book implements Lendable, Classifiable {
           } catch (IOException e) {
               System.out.println("Infelizmente, o livro não está disponível :(");
           }
-
       }
 
       public void returnBook(PhysicalBook book) throws IOException {

@@ -3,6 +3,7 @@ package org.grupo3.library.entities;
 import org.grupo3.library.interfaces.Classifiable;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,6 +72,18 @@ public sealed class Book implements Classifiable permits PhysicalBook, eBook {
         return this.genres;
     }
 
+    public String getGenreNames() {
+        String[] genreArray = this.getGenres().toString().split(",");
+        StringBuilder genreNames = new StringBuilder();
+        for (int i = 0; i < genreArray.length; i++) {
+            if (i % 2 == 0) {
+                continue;
+            }
+            genreNames.append(genreArray[i]).append(";");
+        }
+        return genreNames.toString();
+    }
+
     @Override
     public void addItemToLibrary() throws IOException {
 
@@ -90,7 +103,7 @@ public sealed class Book implements Classifiable permits PhysicalBook, eBook {
 
     @Override
     public String toString() {
-        return String.format("ISBN13: %s%nTítulo: %s%nDescrição: %s%nAutor(a): %s%nEditora: %s%nGêneros: %s%nNúmero de Páginas: %d%n", getISBN13(), getTitle(), getDescription(), getAuthor(), getPublisher(), getGenres().toString(), getPages());
+        return String.format("ISBN13: %s%nTítulo: %s%nDescrição: %s%nAutor(a): %s%nEditora: %s%nGêneros: %s%nNúmero de Páginas: %d%n", getISBN13(), getTitle(), getDescription(), getAuthor(), getPublisher(), getGenreNames(), getPages());
     }
 
     private boolean validateISBN13(String isbn13) {

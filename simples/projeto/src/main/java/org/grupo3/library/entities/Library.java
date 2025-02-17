@@ -17,7 +17,7 @@ import java.util.logging.LogRecord;
 public class Library implements Logger {
     private static final Path WORKDIR_PATH = Path.of(System.getProperty("user.dir"));
     private static final Path FILE_PATH = Path.of(WORKDIR_PATH.toString(), "books.csv");
-    private static final String STRING_FORMAT = "%s,%s,%s,%d,%s,%s,%s,%s,%s,%s%.2f%n";
+    private static final String STRING_FORMAT = "%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s%.2f%n";
 
     @Override
     public FileHandler createLogFile(String type) throws IOException, SecurityException {
@@ -181,7 +181,7 @@ public class Library implements Logger {
             Files.createDirectories(WORKDIR_PATH);
             Files.createFile(FILE_PATH);
             try (FileWriter writer = new FileWriter(FILE_PATH.toString())) {
-                writer.write(String.format("isbn,titulo,descricao,paginas,editora,autor,generos,isDigital,fileFormat,vendor,price%n"));
+                writer.write(String.format("isAvailable,isbn,title,description,pages,publisher,author,genre,isDigital,fileFormat,vendor,price%n"));
                 return true;
             } catch (IOException e) {
                 System.out.println("Não foi possível abrir o arquivo, verifique se você possui permissões para acessar o caminho informado!");
@@ -195,20 +195,7 @@ public class Library implements Logger {
     public void addBookToLibrary(Book book) throws IOException {
         if (createOrOpenLibraryFile()) {
             try (FileWriter writer = new FileWriter(FILE_PATH.toString(), true)) {
-                String line = String.format(STRING_FORMAT,
-                        book.getISBN13(),
-                        book.getTitle(),
-                        book.getDescription(),
-                        book.getPages(),
-                        book.getPublisher(),
-                        book.getAuthor(),
-                        book.getGenres().toString(),
-                        "false",
-                        "N/A",
-                        "N/A",
-                        book.getPrice()
-                );
-                writer.write(line);
+                writer.write(csvLineBuilder(book));
             } catch (IOException e) {
                 System.out.println("Não foi possível abrir o arquivo, verifique se você possui permissões para acessar o caminho informado!");
                 throw e;
@@ -217,24 +204,10 @@ public class Library implements Logger {
     }
 
     public void addBookToLibrary(eBook book) throws IOException {
-        String line = String.format(STRING_FORMAT,
-                book.getISBN13(),
-                book.getTitle(),
-                book.getDescription(),
-                book.getPages(),
-                book.getPublisher(),
-                book.getAuthor(),
-                book.getGenres().toString(),
-                "true",
-                book.getFileFormat(),
-                book.getVendor(),
-                book.getPrice()
-        );
-
         if (createOrOpenLibraryFile()) {
             try (FileWriter writer = new FileWriter(FILE_PATH.toString(), true)) {
                 this.updateLog("eBook", " ", book.getTitle());
-                writer.write(line);
+                writer.write(this.csvLineBuilder(book));
             } catch (IOException e) {
                 System.out.println("Não foi possível abrir o arquivo, verifique se você possui permissões para acessar o caminho informado!");
                 throw e;
@@ -242,7 +215,43 @@ public class Library implements Logger {
         }
     }
 
-    public void deleteBookFromLibrary(String ISBN) {
+    private String csvLineBuilder(Book book) {
+        return String.format(STRING_FORMAT,
+                    "true",
+                    book.getISBN13(),
+                    book.getTitle(),
+                    book.getDescription(),
+                    book.getPages(),
+                    book.getPublisher(),
+                    book.getAuthor(),
+                    book.getGenreNames(),
+                    "false",
+                    "N/A",
+                    "N/A",
+                    book.getPrice()
+            );
+    }
+
+    private String csvLineBuilder(eBook book) {
+        return String.format(STRING_FORMAT,
+                "true",
+                book.getISBN13(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getPages(),
+                book.getPublisher(),
+                book.getAuthor(),
+                book.getGenreNames(),
+                "true",
+                book.getFileFormat(),
+                book.getVendor(),
+                book.getPrice()
+        );
+    }
+
+
+
+    public boolean deleteBookFromLibrary(String ISBN) {
         try (FileWriter writer = new FileWriter(FILE_PATH.toString()) ) {
             List<String> result =  Files.readAllLines(FILE_PATH);
             if (result.isEmpty()) {
@@ -253,17 +262,58 @@ public class Library implements Logger {
                 System.out.println(result);
                 Files.copy(FILE_PATH, Path.of(WORKDIR_PATH.toString(), "tmp", "backupFile.csv"));
                 writer.write(result.stream().toString());
+                return true;
             }
         } catch (NameNotFoundException | IOException notFoundException) {
             System.out.println("Não foi possível encontrar um livro com este ISBN na Biblioteca");
         }
+        return false;
     }
 
     public List<String> getBooklist() {
         try {
-            return Files.readAllLines(FILE_PATH);
+            return Files.readAllLines(FILE_PATH).remove(0).lines().toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean lendBook(String ISBN) throws NameNotFoundException, IOException {
+        if (isBookAvailable(ISBN)) {
+            String[] bookInfo = getBookFromISBN(ISBN);
+            bookInfo[0] = "false";
+            if (deleteBookFromLibrary(ISBN) ) {
+                try (FileWriter writer = new FileWriter(FILE_PATH.toString())) {
+                    for (String string : bookInfo) writer.write(string + ",");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isBookAvailable(String ISBN) throws IOException, NameNotFoundException {
+        String[] bookInfo = getBookFromISBN(ISBN);
+        return Boolean.parseBoolean(bookInfo[0]);
+    }
+
+    public String[] getBookFromISBN(String ISBN) throws NameNotFoundException, IOException {
+        try {
+            if (Files.exists(FILE_PATH)) {
+                String bookInfo = Files.readAllLines(FILE_PATH).stream().filter(e -> e.contains(ISBN)).findFirst().toString();
+                return splitCsvLines(bookInfo);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new String[]{"Não conseguimos encontrar o livro. Por favor, verifique se inseriu os dados corretamente.", "ISBN: ", ISBN};
+    }
+
+    private String[] splitCsvLines(String bookInfo) {
+        return bookInfo.split(",");
+    }
+
+    public String getTitleFromISBN(String ISBN) throws NameNotFoundException, IOException {
+        return getBookFromISBN(ISBN)[2];
     }
 }
