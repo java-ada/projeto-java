@@ -68,8 +68,8 @@ public class Library implements Logger {
     public Book addBookInfo() {
         String categorias =
                 """
-                    Romance       Suspense
-                    Fantasia      Ficção Científica
+                    1- Romance       2- Suspense
+                    3- Fantasia      4- Ficção Científica
                 """;
 
         System.out.println("ISBN: ");
@@ -104,16 +104,16 @@ public class Library implements Logger {
                 int categoria = Integer.parseInt(scanner.nextLine());
                 switch (categoria) {
                     case 1:
-                        genres[i] = new Genre("Romance", "lol");
+                        genres[i] = new Genre("Romance", "Um livro de Romance");
                         break;
                     case 2:
-                        genres[i] = new Genre("Suspense", "lmao");
+                        genres[i] = new Genre("Suspense", "Um livro de Suspense");
                         break;
                     case 3:
-                        genres[i] = new Genre("Fantasia", "yippie");
+                        genres[i] = new Genre("Fantasia", "Um livro de Fantasia");
                         break;
                     case 4:
-                        genres[i] = new Genre("Ficção Científica", "wow");
+                        genres[i] = new Genre("Ficção Científica", "Um livro de Ficção Científica");
                         break;
                 }
             }
@@ -270,19 +270,16 @@ public class Library implements Logger {
         return false;
     }
 
-    public void lendBook(String ISBN) {}
-
-    public void returnBook(String ISBN) {}
 
     public ArrayList<String> getBooklist() {
         var books = new ArrayList<String>();
         try {
-            List<String> lines = Files.readAllLines(FILE_PATH);
+            List<String> lines = Files.readAllLines(FILE_PATH).remove(0).lines().toList();;
             for(String line : lines) {
                 String[] oneBook = line.split(",");
                 books.add(oneBook[1] + " (ISBN: " + oneBook[0] + ")");
             }
-            return Files.readAllLines(FILE_PATH).remove(0).lines().toList();
+            return books;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
