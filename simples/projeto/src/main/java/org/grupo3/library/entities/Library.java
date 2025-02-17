@@ -17,8 +17,8 @@ import java.util.logging.LogRecord;
 public class Library implements Logger {
     private static final Path WORKDIR_PATH = Path.of(System.getProperty("user.dir"));
     private static final Path FILE_PATH = Path.of(WORKDIR_PATH.toString(), "books.csv");
-    private static final String STRING_FORMAT = "%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s%.2f%n";
-
+    private static final String STRING_FORMAT = "%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s%.2f%n";
+    private static final Path TMP_PATH = Path.of(WORKDIR_PATH.toString(), "tmp");
     @Override
     public FileHandler createLogFile(String type) throws IOException, SecurityException {
         final Path LOG_PATH = Path.of(WORKDIR_PATH.toString(), "logs/");
@@ -59,8 +59,8 @@ public class Library implements Logger {
     public void showMenu() {
         String menu =
                 """
-                        1 - Adicionar um livro           2 - Pegar um livro emprestado
-                        3 - Deletar um livro             4 - Listar todos os livros       5 - Sair
+                        1 - Adicionar um livro           2 - Pegar um livro emprestado    3 - Devolver um livro
+                        4 - Deletar um livro             5 - Listar todos os livros       6 - Sair
                 """;
         System.out.println(menu);
     }
@@ -177,11 +177,11 @@ public class Library implements Logger {
     }
 
     public boolean createOrOpenLibraryFile() throws IOException {
-        if (!Files.exists(FILE_PATH) ) {
+        if (Files.notExists(FILE_PATH) ) {
             Files.createDirectories(WORKDIR_PATH);
             Files.createFile(FILE_PATH);
             try (FileWriter writer = new FileWriter(FILE_PATH.toString())) {
-                writer.write(String.format("isAvailable,isbn,title,description,pages,publisher,author,genre,isDigital,fileFormat,vendor,price%n"));
+                writer.write(String.format("isAvailable,isbn,title,description,pages,publisher,author,genreName,genreDescription,isDigital,fileFormat,vendor,price%n"));
                 return true;
             } catch (IOException e) {
                 System.out.println("Não foi possível abrir o arquivo, verifique se você possui permissões para acessar o caminho informado!");
@@ -225,6 +225,7 @@ public class Library implements Logger {
                     book.getPublisher(),
                     book.getAuthor(),
                     book.getGenreNames(),
+                    book.getGenreDescriptions(),
                     "false",
                     "N/A",
                     "N/A",
@@ -242,6 +243,7 @@ public class Library implements Logger {
                 book.getPublisher(),
                 book.getAuthor(),
                 book.getGenreNames(),
+                book.getGenreDescriptions(),
                 "true",
                 book.getFileFormat(),
                 book.getVendor(),
@@ -249,48 +251,107 @@ public class Library implements Logger {
         );
     }
 
+    private String csvLineBuilder(String ISBN) throws NameNotFoundException, IOException {
+        String[] bookInfo = getBookFromISBN(ISBN);
+        StringBuilder builder = new StringBuilder();
+
+        for (String string : bookInfo) {
+            builder.append(string);
+        }
+
+        return builder.toString();
+    }
 
 
-    public boolean deleteBookFromLibrary(String ISBN) {
+    public boolean deleteBookFromLibrary(String ISBN) throws IOException, NameNotFoundException {
+        boolean success = false;
+        String bookInfo = csvLineBuilder(ISBN);
+
+        Files.createDirectories(TMP_PATH);
+        if (Files.notExists(Path.of(TMP_PATH + "/backupFile.csv"))) {
+            Files.createFile(Path.of(TMP_PATH + "/backupFile.csv"));
+        } else {
+            Files.deleteIfExists(Path.of(TMP_PATH + "/backupFile.csv"));
+            Files.copy(FILE_PATH, Path.of(TMP_PATH.toString(), "backupFile.csv"));
+        }
+
         try (FileWriter writer = new FileWriter(FILE_PATH.toString()) ) {
             List<String> result =  Files.readAllLines(FILE_PATH);
+
             if (result.isEmpty()) {
                 throw new NameNotFoundException();
             }
-            List<String> filteredResults = result.stream().filter((e) -> e.equalsIgnoreCase(ISBN)).toList();
-            if (result.removeAll(filteredResults)) {
+            if (result.contains(bookInfo)) {
+                Files.deleteIfExists(FILE_PATH);
+                if (Files.notExists(FILE_PATH) ){
+                    createOrOpenLibraryFile();
+                }
+                String filtered = result.stream().filter(s -> !s.contains(bookInfo)).toString();
+                Files.createTempFile(Path.of(TMP_PATH.toString(), "tmp.csv").toString(), filtered);
                 System.out.println(result);
-                Files.copy(FILE_PATH, Path.of(WORKDIR_PATH.toString(), "tmp", "backupFile.csv"));
-                writer.write(result.stream().toString());
-                return true;
+                Files.copy(Path.of(TMP_PATH.toString(), "/tmp.csv"), FILE_PATH);
+                success = true;
             }
         } catch (NameNotFoundException | IOException notFoundException) {
             System.out.println("Não foi possível encontrar um livro com este ISBN na Biblioteca");
+            success = false;
         }
-        return false;
+        return success;
     }
 
     public List<String> getBooklist() {
         try {
-            return Files.readAllLines(FILE_PATH).remove(0).lines().toList();
+            List<String> strings = new ArrayList<>();
+            for (String line : Files.readAllLines(FILE_PATH) ) {
+                if (line.startsWith("is")) continue;
+                strings.add(line);
+            }
+            return strings;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean lendBook(String ISBN) throws NameNotFoundException, IOException {
-        if (isBookAvailable(ISBN)) {
+    private boolean changeAvailability(String ISBN) throws NameNotFoundException, IOException {
+        try (FileWriter writer = new FileWriter(FILE_PATH.toString())) {
             String[] bookInfo = getBookFromISBN(ISBN);
-            bookInfo[0] = "false";
-            if (deleteBookFromLibrary(ISBN) ) {
-                try (FileWriter writer = new FileWriter(FILE_PATH.toString())) {
-                    for (String string : bookInfo) writer.write(string + ",");
+            String newState;
+            if (isBookAvailable(ISBN)) newState = "false";
+            else newState = "true";
+            bookInfo[0] = bookInfo[0].replaceAll("^.*", newState);
+            if (deleteBookFromLibrary(ISBN)) {
+                for (String string : bookInfo) {
+                    writer.write(string);
                 }
+            }
+            return Boolean.parseBoolean(newState);
+        }
+    }
+
+    public boolean lendBook(String ISBN) throws NameNotFoundException, IOException {
+        System.out.println("Estado Inicial: " + isBookAvailable(ISBN));
+        if (!changeAvailability(ISBN)) {
+            updateLog("physical", "lent", getTitleFromISBN(ISBN));
+            System.out.println("Novo Estado: " + isBookAvailable(ISBN));
+            return true;
+        }
+        System.out.println("Não foi possível alterar");
+        return false;
+    }
+
+    public boolean returnBook(String ISBN) throws NameNotFoundException, IOException {
+        if (!isBookAvailable(ISBN)) {
+            System.out.println("Estado Inicial: " + isBookAvailable(ISBN));
+            if (changeAvailability(ISBN)) {
+                updateLog("physical", "return", getTitleFromISBN(ISBN));
+                System.out.println("Novo Estado: " + isBookAvailable(ISBN));
                 return true;
             }
         }
+        System.out.println("Não foi possível alterar");
         return false;
     }
+
 
     public boolean isBookAvailable(String ISBN) throws IOException, NameNotFoundException {
         String[] bookInfo = getBookFromISBN(ISBN);

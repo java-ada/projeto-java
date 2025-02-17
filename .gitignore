@@ -1,5 +1,6 @@
 quarkus/
 logs/
+tmp/
 .idea/
 .idea/projeto-java.iml
 out/

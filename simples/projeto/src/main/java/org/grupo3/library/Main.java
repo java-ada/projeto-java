@@ -19,10 +19,11 @@ public class Main {
         return this.user;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NameNotFoundException, IOException {
         var main = new Main();
         var library = new Library();
         try (var scanner = new Scanner(System.in)) {
+            String isbn = "";
             System.out.println("Olá, bem-vindo à Caixoteca, como poderia me referir à você?");
             String user = scanner.nextLine();
             main.setUser(user);
@@ -40,21 +41,23 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Por favor, insira o ISBN do livro que deseja pegar emprestado:");
-                    String ISBN = scanner.nextLine();
-                    if (library.lendBook(ISBN)) System.out.printf("Okay, aqui está o livro %s%n", library.getTitleFromISBN(ISBN));
-                    else System.out.println(Arrays.toString(library.getBookFromISBN(ISBN)));
+                    isbn = scanner.nextLine();
+                    if (library.lendBook(isbn)) System.out.printf("Okay, aqui está o livro %s%n", library.getTitleFromISBN(isbn));
+                    else System.out.printf(Arrays.toString(library.getBookFromISBN(isbn)));
                     break;
                 case "3":
-                    System.out.println("Insira o ISBN do livro que deseja deletar:");
-                    String isbn = scanner.nextLine();
-                    library.deleteBookFromLibrary(isbn);
+                    System.out.println("Insira o ISBN do livro que deseja devolver:");
+                    isbn = scanner.nextLine();
+                    if (library.returnBook(isbn)) System.out.printf("Okay, livro %s devolvido com sucesso%n", library.getTitleFromISBN(isbn));
+                    else System.out.println("Não foi possível localizar nenhum livro com ISBN = " + isbn);
                     break;
                 case "4":
-                    System.out.println(library.getBooklist());
+                    System.out.println("Insira o ISBN do livro que deseja deletar:");
+                    isbn = scanner.nextLine();
+                    library.deleteBookFromLibrary(isbn);
                     break;
                 case "5":
-                case "7":
-                    break;
+                    System.out.println(library.getBooklist());
                 case "6":
                 System.out.println("Obrigado e boa leitura. Até a próxima!");
                 break;

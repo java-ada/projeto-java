@@ -84,6 +84,18 @@ public sealed class Book implements Classifiable permits PhysicalBook, eBook {
         return genreNames.toString();
     }
 
+    public String getGenreDescriptions() {
+        String[] genreArray = this.getGenres().toString().split(",");
+        StringBuilder genreNames = new StringBuilder();
+        for (int i = 0; i < genreArray.length; i++) {
+            if (i % 2 != 0) {
+                continue;
+            }
+            genreNames.append(genreArray[i]).append(";");
+        }
+        return genreNames.toString();
+    }
+
     @Override
     public void addItemToLibrary() throws IOException {
 
