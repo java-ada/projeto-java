@@ -14,7 +14,7 @@ public sealed class Book permits PhysicalBook, eBook {
 
     public Book(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres) {
         if (!validateISBN13(ISBN13)) {
-            throw new InvalidParameterException("ISBN13 Inválido");
+            throw new InvalidParameterException("ISBN13 inválido");
         }
 
         this.ISBN13 = ISBN13;

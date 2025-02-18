@@ -5,8 +5,8 @@ public final class eBook extends Book {
     private final String fileFormat;
     private final String vendor;
 
-    public eBook(Book book, String fileFormat, String vendor) {
-        super(book.getISBN13(), book.getTitle(), book.getDescription(), book.getPages(), book.getPublisher(), book.getAuthor(), book.getGenres());
+    public eBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres, String fileFormat, String vendor) {
+        super(ISBN13, title, description, pages, publisher, author, genres);
         this.fileFormat = fileFormat;
         this.vendor = vendor;
     }

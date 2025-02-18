@@ -2,50 +2,36 @@ package org.grupo3.library.entities;
 
 import org.grupo3.library.interfaces.Lendable;
 
-import java.io.IOException;
-
 public final class PhysicalBook extends Book implements Lendable {
     private boolean available;
-    private final Library library = new Library();
 
-    public PhysicalBook(Book book) {
-        super(book.getISBN13(), book.getTitle(), book.getDescription(), book.getPages(), book.getPublisher(), book.getAuthor(), book.getGenres(), book.getPrice());
-        this.available = true;
+    public PhysicalBook(String ISBN13, String title, String description, int pages, String publisher, Author author, Genre[] genres) {
+        super(ISBN13, title, description, pages, publisher, author, genres);
+        available = true;
     }
 
-    public void lendBook(PhysicalBook book) throws SecurityException {
-          try {
-              if (book.isAvailable()) {
-                  System.out.println("Okay, aqui está seu livro, boa leitura!");
-                  available = false;
-              }
-              throw new IOException();
-          } catch (IOException e) {
-              System.out.println("Infelizmente, o livro não está disponível :(");
-          }
-      }
+    public boolean isAvailable() {
+        return available;
+    }
 
-      public void returnBook(PhysicalBook book) throws IOException {
-          if (!available) {
-              available = true;
-              library.updateLog("physical", "return", book.getTitle());
-          } else {
-              throw new IllegalCallerException("Livro ainda não foi emprestado");
-          }
-      }
+    public void lendBook(){
+        if (!available) {
+            throw new IllegalArgumentException("Livro indisponível");
+        }
+        available = false;
+    }
 
-      public boolean isAvailable() {
-          return available;
-      }
+    public void returnBook() {
+        if (available) {
+            throw new IllegalArgumentException("Este livro não foi emprestado");
+        }
+        available = true;
+    }
+
 
     @Override
     public String toString() {
         String formattedString = super.toString();
-        return formattedString + "Disponível: " + isAvailable();
-    }
-
-    @Override
-    public void addItemToLibrary() throws IOException {
-        library.addBookToLibrary(this);
+        return formattedString + "Disponível: " + available;
     }
 }
