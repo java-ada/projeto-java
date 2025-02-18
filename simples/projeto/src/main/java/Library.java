@@ -14,21 +14,8 @@ public class Library {
                     3- Fantasia      4- Ficção Científica
                 """;
 
-        Genre[] genre1 = {new Genre("Fantasia", "lol"), new Genre("Drama", "omg")};
-        Author author1 = new Author("J.K. Rowling", "jkrowling@example.com");
 
-        PhysicalBook book1 = new PhysicalBook(
-                "978-0747532699",
-                "Harry Potter and the Philosopher's Stone",
-                "A young wizard's journey begins.",
-                223,
-                "Bloomsbury",
-                author1,
-                genre1,
-                true
-        );
-
-        List<PhysicalBook> books = getPhysicalBookList();
+        List<Book> books = getBookList();
 
         boolean loggedIn = true;
 
@@ -113,7 +100,7 @@ public class Library {
                     loggedIn = false;
                     break;
                 case"7":
-                    book1.details();
+                    //book1.details();
                     break;
 
             }
@@ -121,8 +108,8 @@ public class Library {
 
         scanner.close();
     }
-    private static List<PhysicalBook> getPhysicalBookList() {
-        List<PhysicalBook> books = new ArrayList<>();
+    private static List<Book> getBookList() {
+        List<Book> books = new ArrayList<>();
 
         Author author1 = new Author("J.K. Rowling", "jkrowling@example.com");
         Author author2 = new Author("George R.R. Martin", "grrm@example.com");

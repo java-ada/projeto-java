@@ -30,7 +30,7 @@ public class Main {
                 true
         );
 
-        List<PhysicalBook> books = getPhysicalBookList();
+        List<Book> books = getBookList();
 
         boolean loggedIn = true;
 
