@@ -7,6 +7,12 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
+
+        var library = Library.getInstance();
+
+        library.listBooks();
+
+        /*
         Scanner scanner = new Scanner(System.in);
 
         String categorias =
@@ -158,6 +164,7 @@ public class Main {
         books.add(book2);
         books.add(book3);
         return books;
+    */
     }
 
 }
