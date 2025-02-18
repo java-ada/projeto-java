@@ -19,6 +19,9 @@ public class Library {
 
         boolean loggedIn = true;
 
+        System.out.println("Olá, bem-vindo à Caixoteca. Por favor, qual o seu nome?");
+        String user = scanner.nextLine();
+
         while (loggedIn) {
 
             Thread.sleep(5000);
@@ -29,8 +32,7 @@ public class Library {
                             1- Adicionar um livro físico    2- Adicionar um livro digital   3- Pegar um livro emprestado 
                             4- Deletar um livro             5- Listar todos os livros       6- Sair
                     """;
-            System.out.println("Olá, bem-vindo à Caixoteca. Por favor, qual o seu nome?");
-            String user = scanner.nextLine();
+
             System.out.printf("Olá, %s. O que deseja?\n", user);
             System.out.println(menu);
             System.out.print("Option: ");
