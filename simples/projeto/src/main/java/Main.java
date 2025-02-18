@@ -111,8 +111,8 @@ public class Main {
         scanner.close();
     }
 
-    private static List<PhysicalBook> getPhysicalBookList() {
-        List<PhysicalBook> books = new ArrayList<>();
+    private static List<Book> getBookList() {
+        List<Book> books = new ArrayList<>();
 
         Author author1 = new Author("J.K. Rowling", "jkrowling@example.com");
         Author author2 = new Author("George R.R. Martin", "grrm@example.com");
