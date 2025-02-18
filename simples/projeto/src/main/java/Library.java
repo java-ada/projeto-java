@@ -67,4 +67,18 @@ public class Library {
                 }
             }
         }
+
+        public Book getBookFromISBN(String ISBN13) {
+            for (Book book : books) {
+                if (book.getISBN13().equals(ISBN13)) {
+                    return book;
+                }
+            }
+            for (Book book : eBooks) {
+                if (book.getISBN13().equals(ISBN13)) {
+                    return book;
+                }
+            }
+            throw new IllegalArgumentException("Não existem correspondências na biblioteca para este ISBN");
+        }
 }

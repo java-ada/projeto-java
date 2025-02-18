@@ -18,7 +18,7 @@ public class Main {
         Genre[] genre2 = {new Genre("Suspense", "Livro de Suspense")};
         Genre[] genre3 = {new Genre("Ficção Científica", "Ficção Científica")};
 
-        library.addBook("978-0553103540",
+        library.addBook("978-0596528126",
                 "A Game of Thrones",
                 "The struggle for the Iron Throne.",
                 694,
@@ -27,7 +27,7 @@ public class Main {
                 genre2
         );
 
-        library.addBook(                "978-0747532699",
+        library.addBook(                "978-1788399081",
                 "Harry Potter and the Philosopher's Stone",
                 "A young wizard's journey begins.",
                 223,
@@ -36,7 +36,7 @@ public class Main {
                 genre1
         );
 
-        library.addEBook("978-0618640157",
+        library.addEBook("9780596520687",
                 "The Lord of the Rings",
                 "An epic quest to destroy the One Ring.",
                 1178,
@@ -59,12 +59,11 @@ public class Main {
 
         while (loggedIn) {
 
-            Thread.sleep(5000);
-
             String menu =
                     """
                             1- Adicionar um livro           2- Pegar um livro emprestado    3- Devolver um livro
-                            4- Deletar um livro             5- Listar todos os livros       6- Sair
+                            4- Deletar um livro             5- Listar todos os livros       6- Buscar livro por ISBN
+                            7- Sair
                     """;
             System.out.println("Olá, bem-vindo à Caixoteca. Por favor, qual o seu nome?");
             String user = scanner.nextLine();
@@ -110,6 +109,7 @@ public class Main {
                     }
                     System.out.println("O livro é físico ou digital? (Digite 1 para físico e 2 para digital):");
                     int typeOfBook = scanner.nextInt();
+                    scanner.nextLine();
                     if (typeOfBook == 1) {
                         library.addBook(ISBN, title, description, pages, publisher, author, genres);
                         System.out.println("Livro adicionado! Voltando ao menu principal...");
@@ -130,20 +130,31 @@ public class Main {
                     System.out.println("Qual o ISBN do livro que você quer devolver?");
                     var returnISBN = scanner.nextLine();
                     library.returnBook(returnISBN);
+                    break;
                 case "4":
                     System.out.println("Qual o ISBN do livro que você quer apagar?");
                     var deleteISBN = scanner.nextLine();
-                    
+                    library.removeBook(deleteISBN);
+                    library.removeEBook(deleteISBN);
+                    break;
                 case "5":
                     System.out.println("Encontramos os seguintes livros: ");
                     library.listBooks();
                     break;
                 case "6":
+                    System.out.println("Qual o ISBN do livro que você quer buscar?");
+                    var searchISBN = scanner.nextLine();
+                    System.out.println(library.getBookFromISBN(searchISBN).toString());
+                    break;
+                case "7":
                     System.out.println("Obrigado e boa leitura. Até a próxima!");
                     loggedIn = false;
                     break;
 
             }
+
+            Thread.sleep(5000);
+
         }
 
         scanner.close();
