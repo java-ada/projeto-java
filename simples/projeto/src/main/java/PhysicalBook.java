@@ -16,14 +16,14 @@ public final class PhysicalBook extends Book implements Lendable {
 
     public void lendBook(){
         if (!available) {
-            throw new IllegalArgumentException("Livro indisponível");
+            throw new IllegalCallerException("Livro indisponível");
         }
         available = false;
     }
 
     public void returnBook() {
         if (available) {
-            throw new IllegalArgumentException("Este livro não foi emprestado");
+            throw new IllegalCallerException("Este livro não foi emprestado");
         }
         available = true;
     }
