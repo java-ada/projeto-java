@@ -1,5 +1,3 @@
-
-
 public final class eBook extends Book {
 
     private final String fileFormat;
