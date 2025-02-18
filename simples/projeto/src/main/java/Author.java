@@ -1,4 +1,2 @@
-public record Author() {
-    private static String name;
-    private static String email;
+public record Author(String name, String email) {
 }
