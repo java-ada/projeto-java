@@ -1,5 +1,3 @@
-
-
 import org.grupo3.library.interfaces.Lendable;
 
 public final class PhysicalBook extends Book implements Lendable {

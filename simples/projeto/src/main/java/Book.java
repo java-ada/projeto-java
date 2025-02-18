@@ -1,5 +1,3 @@
-
-
 import java.security.InvalidParameterException;
 
 public sealed class Book permits PhysicalBook, eBook {
