@@ -1,9 +1,14 @@
+<<<<<<< Updated upstream:simples/projeto/src/main/java/Author.java
 import java.time.LocalDate;
 import java.util.List;
+=======
+package org.grupo3.library.entities;
+>>>>>>> Stashed changes:simples/projeto/src/main/java/org/grupo3/library/entities/Author.java
 
 public class Author {
-    private String name;
+    private final String name;
     private String email;
+<<<<<<< Updated upstream:simples/projeto/src/main/java/Author.java
     private LocalDate dob;  //data de nascimento
     private List<Book> books;
 
@@ -51,4 +56,16 @@ public class Author {
     public List<Book> getBooks() {
         return books;
     }
+=======
+    
+    public Author(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+>>>>>>> Stashed changes:simples/projeto/src/main/java/org/grupo3/library/entities/Author.java
 }
